@@ -57,13 +57,13 @@ for title,text in [
     y=paragraph(title,y,True);y=paragraph(text,y)-12
 finish()
 items=[
-('1. Pantalla de login','01_login.png','Figura 1. Formulario de React con correo y contraseña. El botón Iniciar sesión envía las credenciales al endpoint JWT de Django.'),
-('2. Login exitoso: consola real','02_consola_token.png','Figura 2. Chrome DevTools muestra el mensaje emitido por AuthContext después de obtener el JWT y consultar al usuario. El token se imprime abreviado desde el código. El login redirige al Dashboard.'),
-('3. Dashboard protegido y AuthContext','03_dashboard.png','Figura 3. El Dashboard muestra Hola, Uriel, su email y matrícula obtenidos de /auth/me/. La información corresponde al usuario autenticado. Al cerrar sesión se regresa al login.'),
-('4. API de terceros en el Dashboard','04_api_clima.png','Figura 4. El widget consulta directamente Open-Meteo usando fetch. Muestra datos externos de temperatura, condición del cielo, humedad y viento. La ciudad se puede cambiar y la consulta se puede actualizar.'),
-('5. Consumo SOAP desde Django','06_soap_django.png','Figura 5. Swagger ejecuta el endpoint protegido /api/v1/integrations/country/?code=MX. Django usa zeep para consumir FullCountryInfo. La respuesta HTTP 200 muestra México, capital, moneda, idioma, proveedor y protocolo SOAP.'),
-('6. Registro de usuarios','07_registro.png','Figura 6. El formulario de registro permite crear una cuenta con nombre, apellidos, matrícula, email y contraseña. Se validan los campos y la confirmación de contraseña; el backend no permite otorgar privilegios administrativos.'),
-('7. Confirmación del registro','08_registro_exitoso.png','Figura 7. Después de enviar el formulario, Django respondió HTTP 201. React redirigió al login y mostró que la cuenta estaba lista. Esta evidencia se obtuvo registrando una cuenta real de prueba en la base local.')]
+('1. Inicio de sesión','01_login.png','Aquí se ingresa el correo y la contraseña para entrar a TecnoAula.'),
+('2. Inicio de sesión correcto','02_consola_token.png','La consola muestra que se recibió el token para iniciar la sesión.'),
+('3. Pantalla principal','03_dashboard.png','Después de iniciar sesión, se muestra el nombre del usuario, su matrícula y las opciones disponibles.'),
+('4. Consulta del clima','04_api_clima.png','Se muestra el clima de la ciudad elegida con datos de Open-Meteo.'),
+('5. Consulta de países con SOAP','06_soap_django.png','Django consulta un servicio SOAP y recibe los datos de México, como su capital, moneda e idioma.'),
+('6. Registro de usuarios','07_registro.png','Aquí se escriben los datos necesarios para crear una cuenta nueva.'),
+('7. Registro completado','08_registro_exitoso.png','La cuenta se creó correctamente y ya se puede iniciar sesión.')]
 for title,image,description in items:
     y=start(title)
     y=screenshot(image,y)
