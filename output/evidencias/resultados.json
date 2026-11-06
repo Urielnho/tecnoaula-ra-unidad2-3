@@ -1,0 +1,32 @@
+{
+  "protected_redirect": true,
+  "invalid_login_rejected": true,
+  "login_token_status": 200,
+  "auth_context_name": "Uriel",
+  "weather_live": true,
+  "soap_live": true,
+  "session_survives_reload": true,
+  "session_refresh_status": 200,
+  "country_selection_live": "Canada",
+  "weather_selection_live": true,
+  "soap_response": {
+    "code": "MX",
+    "name": "Mexico",
+    "capital": "Mexico City",
+    "currency": "MXN",
+    "phone_code": "52",
+    "languages": [
+      "Spanish"
+    ],
+    "provider": "CountryInfoService",
+    "protocol": "SOAP",
+    "operation": "FullCountryInfo",
+    "wsdl": "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL",
+    "fetched_at": "2026-11-06T02:54:09.153874+00:00"
+  },
+  "logout_protects_dashboard": true,
+  "register_status": 201,
+  "mobile_no_horizontal_overflow": true,
+  "browser_errors": [],
+  "console_token_received": true
+}

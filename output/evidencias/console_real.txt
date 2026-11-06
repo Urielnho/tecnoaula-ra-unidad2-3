@@ -1,0 +1,1 @@
+[TecnoAula] JWT obtenido. Access: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX... | Vigencia: 15 minutos.
