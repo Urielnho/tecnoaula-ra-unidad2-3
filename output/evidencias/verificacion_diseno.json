@@ -1,0 +1,20 @@
+{
+  "login_a11y": [],
+  "dashboard_a11y": [],
+  "desktop_section_navigation": true,
+  "responsive_widths": [
+    320,
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "mobile_menu_keyboard_and_links": true,
+  "weather_error_and_retry": true,
+  "catalog_empty_state": true,
+  "soap_error_and_retry": true,
+  "register_a11y": [],
+  "checks": "axe-core: wcag2a, wcag2aa y wcag21aa; no es una certificación completa",
+  "state_tests": "Errores y catálogo vacío aislados solo para verificar la UI; no se capturaron como evidencia de datos reales.",
+  "delivery_screenshots": "Capturas de Chrome con API Django, Open-Meteo y SOAP reales."
+}

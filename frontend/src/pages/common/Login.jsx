@@ -3,7 +3,7 @@ import { Form } from "semantic-ui-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { ArrowRight, Mail, LockKeyhole } from "lucide-react";
+import { ArrowRight, LockKeyhole, LoaderCircle } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import Field from "../../components/Field";
 export default function Login() {
@@ -44,10 +44,10 @@ export default function Login() {
   if (!loading && auth) return <Navigate to="/dashboard" replace />;
   return (
     <section className="auth-card">
-      <span className="section-number">BIENVENIDO A TU ESPACIO</span>
-      <h2>Qué gusto verte de nuevo.</h2>
+      <span className="section-number">ACCESO A TECNOAULA</span>
+      <h1>Inicia sesión en tu espacio.</h1>
       <p className="auth-subtitle">
-        Inicia sesión y continúa donde lo dejaste.
+        Qué gusto verte de nuevo. Continúa donde lo dejaste.
       </p>
       {location.state?.registered && (
         <div className="success-message" role="status">
@@ -81,8 +81,17 @@ export default function Login() {
           type="submit"
           disabled={formik.isSubmitting}
           aria-busy={formik.isSubmitting}
+          aria-label="Iniciar sesión"
         >
-          Iniciar sesión <ArrowRight size={18} />
+          {formik.isSubmitting ? (
+            <>
+              Iniciando sesión <LoaderCircle size={16} className="spinner" />
+            </>
+          ) : (
+            <>
+              Iniciar sesión <ArrowRight size={16} />
+            </>
+          )}
         </button>
       </Form>
       <div className="auth-divider">
@@ -91,7 +100,7 @@ export default function Login() {
         <span />
       </div>
       <Link className="secondary-btn" to="/register">
-        Crear una cuenta <ArrowRight size={17} />
+        Crear una cuenta
       </Link>
       <p className="auth-fine">
         <LockKeyhole size={14} />

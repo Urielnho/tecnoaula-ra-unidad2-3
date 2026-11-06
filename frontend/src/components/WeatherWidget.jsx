@@ -1,11 +1,34 @@
 import { useEffect, useState } from "react";
 import {
   CloudSun,
+  Sun,
+  CloudRain,
+  CloudLightning,
+  Snowflake,
+  CloudFog,
   Droplets,
   Wind,
-  RefreshCw,
   ExternalLink,
 } from "lucide-react";
+import PanelState from "./PanelState";
+import RefreshButton from "./RefreshButton";
+function WeatherIcon({ code }) {
+  const Icon =
+    code === 0
+      ? Sun
+      : code <= 3
+        ? CloudSun
+        : code <= 48
+          ? CloudFog
+          : code <= 67
+            ? CloudRain
+            : code <= 77
+              ? Snowflake
+              : code <= 82
+                ? CloudRain
+                : CloudLightning;
+  return <Icon size={25} strokeWidth={1.4} aria-hidden="true" />;
+}
 const cities = {
   hermosillo: { name: "Hermosillo", latitude: 29.07, longitude: -110.96 },
   cdmx: { name: "Ciudad de México", latitude: 19.43, longitude: -99.13 },
@@ -72,75 +95,85 @@ export default function WeatherWidget() {
     };
   }, [city, reload]);
   return (
-    <article className="card weather-card" aria-labelledby="weather-title">
-      <div className="card-heading">
+    <article
+      className="data-panel weather-card"
+      aria-labelledby="weather-title"
+      aria-busy={loading}
+    >
+      <div className="panel-heading">
         <div>
-          <span className="overline">UN VISTAZO AFUERA</span>
-          <h3 id="weather-title">El clima de hoy</h3>
+          <h3 id="weather-title">Clima local</h3>
+          <p>Una mirada a tu ciudad.</p>
         </div>
-        <span className="icon-badge">
-          <CloudSun size={24} />
-        </span>
-      </div>
-      <label className="sr-only" htmlFor="weather-city">
-        Ciudad del clima
-      </label>
-      <select
-        id="weather-city"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-      >
-        {Object.entries(cities).map(([key, item]) => (
-          <option key={key} value={key}>
-            {item.name}
-          </option>
-        ))}
-      </select>
-      {loading ? (
-        <p role="status" className="widget-loading">
-          Consultando el clima…
-        </p>
-      ) : error ? (
-        <div className="widget-error" role="alert">
-          {error}
-        </div>
-      ) : (
-        <div data-testid="weather-data">
-          <div className="temperature">
-            {Math.round(weather.current.temperature_2m)}
-            <span>{weather.current_units.temperature_2m}</span>
-            <CloudSun size={66} strokeWidth={1} />
-          </div>
-          <p className="weather-description">
-            {description(weather.current.weather_code)}
-          </p>
-          <div className="weather-metrics">
-            <span>
-              <Droplets size={16} />
-              {weather.current.relative_humidity_2m}% humedad
-            </span>
-            <span>
-              <Wind size={16} />
-              {weather.current.wind_speed_10m}{" "}
-              {weather.current_units.wind_speed_10m}
-            </span>
-          </div>
-          <p className="updated-at">
-            Lectura: {weather.current.time.replace("T", " · ")} (hora local)
-          </p>
-        </div>
-      )}
-      <div className="card-footer">
-        <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">
-          Open-Meteo <ExternalLink size={12} />
-        </a>
-        <button
+        <RefreshButton
+          label="Actualizar clima"
+          loading={loading}
           onClick={() => setReload((x) => x + 1)}
-          disabled={loading}
-          aria-label="Actualizar clima"
+        />
+      </div>
+      <div className="select-field">
+        <label htmlFor="weather-city">Ciudad</label>
+        <select
+          id="weather-city"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
         >
-          <RefreshCw size={15} />
-        </button>
+          {Object.entries(cities).map(([key, item]) => (
+            <option key={key} value={key}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="panel-content">
+        {loading ? (
+          <PanelState loading>Consultando el clima…</PanelState>
+        ) : error ? (
+          <PanelState error={error} onRetry={() => setReload((x) => x + 1)} />
+        ) : (
+          <div data-testid="weather-data">
+            <div className="weather-reading">
+              <div className="temperature">
+                {Math.round(weather.current.temperature_2m)}
+                <span>{weather.current_units.temperature_2m}</span>
+              </div>
+              <div className="weather-condition">
+                <WeatherIcon code={weather.current.weather_code} />
+                <span>{description(weather.current.weather_code)}</span>
+              </div>
+            </div>
+            <dl className="weather-metrics">
+              <div>
+                <dt>
+                  <Droplets size={14} aria-hidden="true" />
+                  Humedad
+                </dt>
+                <dd>{weather.current.relative_humidity_2m}%</dd>
+              </div>
+              <div>
+                <dt>
+                  <Wind size={14} aria-hidden="true" />
+                  Viento
+                </dt>
+                <dd>
+                  {weather.current.wind_speed_10m}{" "}
+                  <span>{weather.current_units.wind_speed_10m}</span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        )}
+      </div>
+      <div className="panel-footer">
+        <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">
+          Open-Meteo <ExternalLink size={11} aria-hidden="true" />
+        </a>
+        {weather && !loading && (
+          <span className="updated-at">
+            {weather.current.time.replace("T", " · ")}{" "}
+            <span className="time-zone">(hora local)</span>
+          </span>
+        )}
       </div>
     </article>
   );

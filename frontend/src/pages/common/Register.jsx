@@ -2,7 +2,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Form } from "semantic-ui-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, LoaderCircle } from "lucide-react";
 import Field from "../../components/Field";
 import { registerApi } from "../../api/user";
 import { useAuth } from "../../hooks/useAuth";
@@ -63,10 +63,10 @@ export default function Register() {
         <ArrowLeft size={16} />
         Volver al inicio de sesión
       </Link>
-      <span className="section-number">DA EL PRIMER PASO</span>
-      <h2>Tu espacio comienza aquí.</h2>
+      <span className="section-number">REGISTRO EN TECNOAULA</span>
+      <h1>Crea tu cuenta.</h1>
       <p className="auth-subtitle">
-        Crea tu cuenta y conecta con nuevas posibilidades.
+        Tu información y tus herramientas, en un mismo lugar.
       </p>
       <Form onSubmit={formik.handleSubmit} noValidate>
         <div className="form-grid">
@@ -126,8 +126,17 @@ export default function Register() {
           type="submit"
           disabled={formik.isSubmitting}
           aria-busy={formik.isSubmitting}
+          aria-label="Crear mi cuenta"
         >
-          Crear mi cuenta <ArrowRight size={18} />
+          {formik.isSubmitting ? (
+            <>
+              Creando cuenta <LoaderCircle size={16} className="spinner" />
+            </>
+          ) : (
+            <>
+              Crear mi cuenta <ArrowRight size={16} />
+            </>
+          )}
         </button>
       </Form>
       <p className="auth-fine">

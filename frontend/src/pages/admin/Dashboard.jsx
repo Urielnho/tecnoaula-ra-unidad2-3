@@ -1,24 +1,21 @@
 import { useEffect, useState } from "react";
-import {
-  ArrowUpRight,
-  ShieldCheck,
-  GraduationCap,
-  Package,
-  Cpu,
-  ArrowRight,
-} from "lucide-react";
+import { ExternalLink, ShieldCheck, Cpu } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { authRequest, API_URL } from "../../api/client";
 import WeatherWidget from "../../components/WeatherWidget";
 import CountryWidget from "../../components/CountryWidget";
+import PanelState from "../../components/PanelState";
 export default function Dashboard() {
   const { auth, logout } = useAuth();
   const user = auth.me;
   const [products, setProducts] = useState([]);
   const [productError, setProductError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0);
   useEffect(() => {
     let active = true;
+    setLoading(true);
+    setProductError("");
     authRequest("/products/")
       .then((data) => {
         if (active)
@@ -36,62 +33,73 @@ export default function Dashboard() {
     return () => {
       active = false;
     };
-  }, [logout]);
+  }, [logout, reload]);
   const name =
     [user.first_name, user.last_name].filter(Boolean).join(" ") || user.email;
+  const date = new Intl.DateTimeFormat("es-MX", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "America/Phoenix",
+  }).format(new Date());
   return (
-    <main className="dashboard-main">
-      <div className="page-heading">
+    <main className="dashboard-main" id="contenido" tabIndex={-1}>
+      <header className="page-heading">
         <div>
-          <span className="section-number">UN BUEN DÍA PARA DESCUBRIR</span>
-          <h1>
-            Hola, {user.first_name || "estudiante"}
-            <span className="greeting-dot">.</span>
-          </h1>
-          <p>Todo lo que necesitas, en un mismo espacio.</p>
+          <span className="eyebrow">TU ESPACIO, A TU RITMO</span>
+          <h1>Hola, {user.first_name || "estudiante"}.</h1>
+          <p>Tu información, tus consultas y tu catálogo. En un solo lugar.</p>
         </div>
-        <span className="date-label">Tu espacio de aprendizaje</span>
-      </div>
-      <section className="welcome-banner">
+        <time className="date-label">{date}</time>
+      </header>
+      <section className="account-summary" aria-label="Resumen de tu cuenta">
         <div>
-          <span className="banner-label">SIGUE CONSTRUYENDO TU CAMINO</span>
-          <h2>
-            Las grandes ideas
-            <br />
-            empiezan con curiosidad.
-          </h2>
-          <p>Explora, conecta y haz que cada día cuente.</p>
+          <span className="status-dot" />
+          <strong>Todo listo para continuar</strong>
+          <p>
+            Has iniciado sesión como <span>{user.email}</span>
+          </p>
         </div>
-        <div className="banner-art" aria-hidden="true">
-          <div className="banner-orbit" />
-          <GraduationCap size={110} strokeWidth={1} />
-          <span className="art-star">✦</span>
-          <ArrowUpRight size={30} className="art-arrow" />
+        <a className="inline-link" href="#perfil">
+          Ver mi cuenta
+        </a>
+      </section>
+      <section
+        id="consultas"
+        className="dashboard-section"
+        aria-labelledby="queries-title"
+      >
+        <div className="section-heading">
+          <div>
+            <h2 id="queries-title">Tu entorno, conectado</h2>
+            <p>Información actualizada para explorar más allá del aula.</p>
+          </div>
+          <span className="section-meta">Fuentes externas</span>
+        </div>
+        <div className="widgets-grid">
+          <WeatherWidget />
+          <CountryWidget />
         </div>
       </section>
-      <div className="section-heading">
-        <h2>Tu día, conectado</h2>
-        <span>Un poco de información. Muchas posibilidades.</span>
-      </div>
-      <section className="widgets-grid">
-        <WeatherWidget />
-        <CountryWidget />
-      </section>
-      <section className="bottom-grid">
-        <article className="card profile-card">
-          <div className="card-heading">
+      <div className="bottom-grid">
+        <section
+          className="profile-section dashboard-section"
+          id="perfil"
+          aria-labelledby="profile-title"
+        >
+          <div className="section-heading">
             <div>
-              <span className="overline">HECHO PARA TI</span>
-              <h3>Tu perfil de estudiante</h3>
+              <h2 id="profile-title">Mi cuenta</h2>
+              <p>La información de tu sesión actual.</p>
             </div>
-            <ShieldCheck size={23} />
+            <ShieldCheck size={17} aria-hidden="true" />
           </div>
           <div className="profile-name">
             <span className="avatar profile-avatar">
               {(user.first_name?.[0] || user.email[0]).toUpperCase()}
             </span>
             <div>
-              <h4>{name}</h4>
+              <h3>{name}</h3>
               <p>{user.email}</p>
             </div>
           </div>
@@ -101,66 +109,82 @@ export default function Dashboard() {
               <dd>{user.matricula}</dd>
             </div>
             <div>
-              <dt>Cuenta</dt>
+              <dt>Tipo de cuenta</dt>
+              <dd>{user.is_staff ? "Administrador" : "Estudiante"}</dd>
+            </div>
+            <div>
+              <dt>Estado</dt>
               <dd>
                 <span className="status-dot" />
-                {user.is_staff ? "Administrador" : "Estudiante"}
+                {user.is_active ? "Activa" : "Inactiva"}
               </dd>
             </div>
           </dl>
-          <p className="profile-note">
-            <ShieldCheck size={14} />
-            Estos datos pertenecen a tu sesión autenticada.
-          </p>
-        </article>
-        <article className="card products-card">
-          <div className="card-heading">
+        </section>
+        <section
+          id="catalogo"
+          className="products-section dashboard-section"
+          aria-labelledby="catalog-title"
+        >
+          <div className="section-heading">
             <div>
-              <span className="overline">EQUÍPATE PARA CREAR</span>
-              <h3>En TecnoAula</h3>
+              <h2 id="catalog-title">Catálogo TecnoAula</h2>
+              <p>Tecnología disponible para tu espacio de trabajo.</p>
             </div>
-            <Package size={23} />
           </div>
           {loading ? (
-            <p role="status">Cargando productos…</p>
+            <PanelState loading>Cargando catálogo…</PanelState>
           ) : productError ? (
-            <p role="alert">{productError}</p>
+            <PanelState
+              error={productError}
+              onRetry={() => setReload((x) => x + 1)}
+            />
           ) : products.length === 0 ? (
-            <p>Aún no hay productos en el catálogo.</p>
+            <PanelState>Aún no hay productos en el catálogo.</PanelState>
           ) : (
-            products.slice(0, 2).map((product) => (
-              <div className="product-row" key={product.id}>
-                <span className="product-icon">
-                  <Cpu size={29} />
-                </span>
-                <div>
-                  <h4>{product.name}</h4>
-                  <p>{product.category}</p>
-                </div>
-                <strong>
-                  {new Intl.NumberFormat("es-MX", {
-                    style: "currency",
-                    currency: "MXN",
-                  }).format(product.price)}
-                </strong>
+            <div
+              className="catalog-table"
+              role="table"
+              aria-label="Productos disponibles"
+            >
+              <div className="catalog-table-heading" role="row">
+                <span role="columnheader">PRODUCTO</span>
+                <span role="columnheader">PRECIO</span>
               </div>
-            ))
+              {products.map((product) => (
+                <div className="product-row" role="row" key={product.id}>
+                  <div className="product-cell" role="cell">
+                    <span className="product-icon">
+                      <Cpu size={20} strokeWidth={1.5} aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h3>{product.name}</h3>
+                      <p>{product.category}</p>
+                    </div>
+                  </div>
+                  <strong role="cell">
+                    {new Intl.NumberFormat("es-MX", {
+                      style: "currency",
+                      currency: "MXN",
+                    }).format(product.price)}
+                  </strong>
+                </div>
+              ))}
+            </div>
           )}
           <a
             href={`${API_URL}/swagger/`}
+            className="catalog-link inline-link"
             target="_blank"
             rel="noreferrer"
-            className="catalog-link"
           >
-            Explorar la API de TecnoAula <ArrowRight size={16} />
+            Consultar documentación de la API <ExternalLink size={13} />
           </a>
-        </article>
-      </section>
+        </section>
+      </div>
       <footer className="dashboard-footer">
-        <span>TecnoAula · Aprende. Conecta. Crea.</span>
-        <span>
-          Hecho para seguir aprendiendo <span className="tiny-star">✦</span>
-        </span>
+        <span>TecnoAula</span>
+        <span>Un espacio para seguir aprendiendo.</span>
       </footer>
     </main>
   );

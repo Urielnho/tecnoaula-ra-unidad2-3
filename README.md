@@ -101,3 +101,11 @@ Los tokens en localStorage siguen el enfoque del manual; para producción se rec
 - [CountryInfoService WSDL](http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL)
 - [django-cors-headers](https://github.com/adamchainz/django-cors-headers)
 - Manual del curso: Desarrollo Django React, páginas 13 a 35, y rúbrica Resultado de aprendizaje-2y3.
+
+
+## Rediseño de la interfaz
+La interfaz utiliza Inter alojada en `frontend/public/fonts/` con su licencia, verde profundo y superficies neutras. El logotipo y favicon comparten el mismo símbolo. Se sustituyó el banner por un resumen de sesión, se agruparon las consultas y se reorganizaron perfil y catálogo con separadores. La navegación enlaza únicamente a las secciones existentes y a Swagger.
+
+En móvil hay un menú con control de foco, cierre con Escape y enlaces a las secciones del Dashboard. Se unificaron los estados de carga, error y reintento. Los indicadores de cuenta, productos y consultas provienen de datos reales. Se conserva la lógica de autenticación y los endpoints del backend.
+
+La compilación fue comprobada y se repitió el recorrido de navegador con llamadas reales. Se revisaron anchos de 320, 390, 768, 1024 y 1440 píxeles, sin desbordamiento horizontal. Las comprobaciones automatizadas de axe-core para WCAG A/AA en login, registro y Dashboard no reportaron incidencias; esto no sustituye una auditoría completa de accesibilidad. Los estados de error y catálogo vacío se comprobaron con fallos de red y respuestas aisladas solo durante pruebas. Las capturas entregadas se tomaron aparte, sin simular datos, consultando los servicios reales.
